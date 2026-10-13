@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpendWise Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+
+    <!-- Sidebar / Navigation -->
+    <aside class="sidebar">
+      <div class="logo">
+        <span class="logo-mark" aria-hidden="true">S</span>
+        <span class="logo-text">SpendWise</span>
+      </div>
+
+      <nav aria-label="Main navigation">
+        <ul class="nav-list">
+          <li><a class="nav-item active" href="#" aria-current="page"><span class="nav-icon" aria-hidden="true">▦</span> Dashboard</a></li>
+          <li><a class="nav-item" href="#"><span class="nav-icon" aria-hidden="true">⇄</span> Transactions</a></li>
+          <li><a class="nav-item" href="#"><span class="nav-icon" aria-hidden="true">◔</span> Budgets</a></li>
+          <li><a class="nav-item" href="#"><span class="nav-icon" aria-hidden="true">★</span> Goals</a></li>
+          <li><a class="nav-item" href="#"><span class="nav-icon" aria-hidden="true">≡</span> Reports</a></li>
+          <li><a class="nav-item" href="#"><span class="nav-icon" aria-hidden="true">⚙</span> Settings</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-title">
+        <h1>Dashboard</h1>
+        <p>Your spending overview for October 2026</p>
+      </div>
+      <div class="header-actions">
+        <span class="balance">Balance <strong>$3,420.50</strong></span>
+        <div class="avatar" aria-label="Signed in as Ken">K</div>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="main">
+      <h2 class="section-title">Spending by category</h2>
+
+      <section class="cards" aria-label="Category cards">
+
+        <article class="card" tabindex="0">
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">🍔</span>
+            <h3>Food</h3>
+            <span class="badge">72% used</span>
+          </div>
+          <p class="amount">$432.00</p>
+          <p class="meta">of $600.00 budget</p>
+          <div class="bar"><span style="--pct: 72%"></span></div>
+        </article>
+
+        <article class="card" tabindex="0">
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">🚌</span>
+            <h3>Transport</h3>
+            <span class="badge">45% used</span>
+          </div>
+          <p class="amount">$90.00</p>
+          <p class="meta">of $200.00 budget</p>
+          <div class="bar"><span style="--pct: 45%"></span></div>
+        </article>
+
+        <article class="card" tabindex="0">
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">🏠</span>
+            <h3>Rent</h3>
+            <span class="badge">100% used</span>
+          </div>
+          <p class="amount">$1,200.00</p>
+          <p class="meta">of $1,200.00 budget</p>
+          <div class="bar"><span style="--pct: 100%"></span></div>
+        </article>
+
+        <article class="card" tabindex="0">
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">🎬</span>
+            <h3>Entertainment</h3>
+            <span class="badge">88% used</span>
+          </div>
+          <p class="amount">$132.00</p>
+          <p class="meta">of $150.00 budget</p>
+          <div class="bar"><span style="--pct: 88%"></span></div>
+        </article>
+
+        <article class="card" tabindex="0">
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">💰</span>
+            <h3>Savings</h3>
+            <span class="badge">60% of goal</span>
+          </div>
+          <p class="amount">$450.00</p>
+          <p class="meta">of $750.00 monthly goal</p>
+          <div class="bar"><span style="--pct: 60%"></span></div>
+        </article>
+
+        <article class="card" tabindex="0">
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">💡</span>
+            <h3>Utilities</h3>
+            <span class="badge">54% used</span>
+          </div>
+          <p class="amount">$108.50</p>
+          <p class="meta">of $200.00 budget</p>
+          <div class="bar"><span style="--pct: 54%"></span></div>
+        </article>
+
+      </section>
+    </main>
+
+  </div>
+</body>
+</html>
