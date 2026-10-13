@@ -1,144 +1,96 @@
-# SpendWise Dashboard Shell
+# SpendWise
 
-## What this is
-
-The SpendWise Dashboard Shell is the visual foundation of my capstone project, a personal expense tracker. It is a clean, responsive dashboard layout built with plain HTML and modern CSS. This week is structure only, so all the content is realistic static data and there is no JavaScript functionality yet.
+SpendWise is a personal budgeting dashboard that I'm building step by step for my capstone project. It started as a static CSS layout and now uses JavaScript to store expenses, make decisions about spending and update the page as the user interacts with it.
 
 ## How to run it
 
-1. Keep `index.html` and `style.css` in the same folder.
+1. Keep `index.html`, `style.css` and `script.js` in the same folder.
 2. Open `index.html` in any modern browser (or use the VS Code Live Server extension).
+3. Open the console (F12, then the Console tab) to see the status log that is printed after every change.
 
 ## Project files
 
 | File | What it does |
 | --- | --- |
-| `index.html` | The page structure: sidebar, header and six category cards |
-| `style.css` | All styling: theme variables, layout, cards, animations, responsive rules and dark theme |
-| `script.js` | JavaScript foundation: stores budget data, collects input and calculates the balance |
+| `index.html` | Page structure: sidebar, header, summary, category cards, expense form and expense list |
+| `style.css` | Theme variables, Grid and Flexbox layout, card animations, forms, status colors, responsive and dark theme |
+| `script.js` | Data, calculations, decision making and DOM updates |
 | `README.md` | This document |
 
 ---
 
-## What each part does
+## How it works: from user action to page update
 
-### 1. HTML structure (`index.html`)
-
-The page is wrapped in a single `.app` container with three direct children, each with a clear job:
-
-- **`<aside class="sidebar">`** is the navigation menu. It holds the SpendWise logo and a `<nav>` with a list of links: Dashboard (marked as the current page), Transactions, Budgets, Goals, Reports and Settings.
-- **`<header class="header">`** shows the page title ("Dashboard"), a short subtitle for the month, the account balance and a user avatar.
-- **`<main class="main">`** contains a "Spending by category" heading and a `<section class="cards">` holding six `<article class="card">` elements.
-
-Each card has the same internal structure:
-
-| Piece | Purpose |
-| --- | --- |
-| Icon | Emoji in a rounded box so each category is recognisable |
-| Category name | Food, Transport, Rent, Entertainment, Savings or Utilities |
-| Badge | Percentage of the budget used (or of the goal reached for Savings) |
-| Amount | How much has been spent or saved this month |
-| Meta text | The budget or goal the amount is measured against |
-| Progress bar | A visual fill whose width is set by a `--pct` CSS variable |
-
-The cards use `tabindex="0"` so keyboard users can Tab to them and see the focus animation. Decorative icons use `aria-hidden="true"`, and the nav has an `aria-label`, so the page works better with screen readers.
-
-### 2. Theme with CSS custom properties
-
-All colors live in one place, the `:root` selector, and the rest of the stylesheet uses them through `var(...)`:
-
-| Variable | Role |
-| --- | --- |
-| `--brand` | Brand color (indigo): logo, active nav item, badges, focus ring |
-| `--accent` | Accent color (teal): avatar, balance figure, end of progress bars |
-| `--bg` | Page background |
-| `--surface` | Background of the sidebar, header and cards |
-| `--text` | Primary text |
-| `--text-muted` | Secondary text |
-
-There are also helper variables for borders, shadows, border radius and animation speed, so changing the look of the whole app means editing a few lines.
-
-### 3. Layout with CSS Grid and Flexbox
-
-- **CSS Grid (page level):** `.app` uses `grid-template-areas` to place the sidebar on the left (240px wide), with the header above the main area on the right. The card area uses `repeat(auto-fill, minmax(240px, 1fr))`, so the cards fill the available width and wrap automatically.
-- **Flexbox (inside components):**
-  - the **sidebar** stacks the logo and menu in a column, and each nav item lines up its icon and label in a row
-  - the **header** pushes the title to the left and the balance and avatar to the right
-  - each **card** stacks its content vertically, and the top row of each card aligns the icon, name and badge
-- **No absolute positioning** is used anywhere for the page layout.
-
-### 4. Responsive design
-
-A media query at `max-width: 767px` (that is, below 768px) changes the layout:
-
-- the page grid becomes a single column (sidebar on top, then header, then content)
-- the sidebar menu turns into a horizontal, wrapping row of links
-- the header content stacks vertically
-- the cards stack one per row
-
-To verify this, open DevTools (F12), toggle the Device Toolbar (Ctrl+Shift+M, or Cmd+Shift+M on Mac) and test widths below and above 768px, such as 375px and 1024px.
-
-### 5. Card micro-interactions
-
-Cards respond to both **hover** and **keyboard focus** (`:focus-visible`):
-
-- they lift up slightly with `transform: translateY(-4px)`
-- they gain a stronger `box-shadow`
-- the transition lasts **200ms**, within the 250ms limit
-- on focus, a visible outline is added for accessibility
-
-For users who have reduced motion turned on in their system settings, the animation is disabled with `prefers-reduced-motion`.
-
-### 6. Stretch goal: dark theme
-
-The dark theme is implemented by overriding **only the `:root` variables** inside `@media (prefers-color-scheme: dark)`. No component rules are repeated, which works because every color in the stylesheet comes from a variable. The page switches automatically with the device's light or dark setting.
-
-To test it, open DevTools, go to Rendering, and use "Emulate CSS media feature prefers-color-scheme".
+1. The user does something (submits a form, clicks Delete, picks a filter, clicks a card).
+2. An **event listener** in `script.js` runs.
+3. The listener updates the **data** (the `expenses` array or `monthlyBudget`).
+4. **Loops** recalculate totals and **conditionals** decide the status.
+5. **DOM functions** redraw the summary, the cards and the expense list.
 
 ---
 
-## JavaScript foundation (`script.js`)
+## JavaScript concepts and where they are used
 
-`script.js` is linked in `index.html` with `<script src="script.js" defer></script>`, so it runs after the page has loaded. It logs "SpendWise script loaded successfully." to the console as a quick check that the link works.
+### Decision making (conditionals)
+- `getBudgetStatus()` uses `if / else if / else` to give feedback on the whole budget:
+  - **over budget** when the remaining balance is below 0
+  - **warning** when 80% or more of the budget is used
+  - **on track** otherwise
+- `getCategoryStatus()` does the same for each card. Savings is treated as a goal, so reaching it shows "Goal reached" instead of a warning.
+- The expense form checks the input (empty description, amount of 0 or less) and shows an error message instead of saving it.
 
-### Data (variables)
-- `APP_NAME` and `CURRENCY` are constants used in the report.
-- `monthlyBudget` holds the user's total budget for the month.
-- `expenses` is an object with one entry per dashboard category (Food, Transport, Rent, Entertainment, Savings, Utilities).
+### Multiple records (arrays)
+- `expenses` is an array of objects: `{ id, description, amount, category }`.
+- `categories` is an array of objects that describes the six dashboard cards (name, icon, budget, type).
+- `push()` adds a new expense and `splice()` removes one.
 
-### User input
-`collectUserInput()` uses `prompt()` to ask for the monthly budget, then the amount spent in each category. `getNumberInput()` turns the answer into a number and keeps asking until the input is valid (not empty, not text, not negative). Pressing Cancel counts as 0.
+### Loops
+- `for...of` in `calculateTotalExpenses()` and `calculateCategoryTotal()` adds up the records.
+- `for...of` over `categories` builds the cards and the dropdown options.
+- A backwards `for` loop in `renderExpenseList()` shows the newest expense first and uses `continue` to skip records that don't match the filter.
+- A `for` loop finds the expense to delete by its `id`.
 
-### Functions
-| Function | What it does |
+### Dynamic dashboard (DOM manipulation)
+- `renderSummary()` updates the budget, spent, remaining and percentage values, the header balance and the colored status banner.
+- `renderCards()` creates the six category cards with `createElement`, sets each progress bar through a CSS variable and adds a status class (`ok`, `warning` or `over`).
+- `renderExpenseList()` rebuilds the list and shows an empty message when nothing matches.
+- Text is added with `textContent` (not `innerHTML`), so what the user types can't inject HTML.
+
+### User interactions (event listeners)
+| Event | What happens |
 | --- | --- |
-| `getNumberInput(message)` | Prompts and validates a number |
-| `formatCurrency(amount)` | Formats a number as money, e.g. `$1,200.00` |
-| `calculateTotalExpenses(expenseData)` | Adds up all category expenses |
-| `calculateRemainingBalance(budget, totalExpenses)` | Budget minus total expenses |
-| `calculatePercentUsed(budget, totalExpenses)` | Share of the budget spent, as a percentage |
-| `getBudgetStatus(remaining)` | Returns a message: within budget, on the limit or over budget |
-| `collectUserInput()` | Runs all the prompts and stores the answers |
-| `displayReport()` | Prints the labelled report to the console |
+| Submit the **Add expense** form | Validates, adds the record to the array and re-renders everything |
+| Submit the **Update budget** form | Changes `monthlyBudget` and re-renders |
+| Click **Delete** on an expense | Removes the record (one listener on the list handles every button) |
+| Change the **Show** dropdown | Filters the expense list by category |
+| Click a category card (or press Enter / Space on it) | Filters the list to that category |
 
-### Output
-Open the browser console (F12, then the Console tab) after answering the prompts to see a report with the monthly budget, expenses by category, total expenses, remaining balance, percentage used and a status message. Refresh the page to run it again.
+---
 
-## Requirements checklist
+## CSS features (from earlier weeks)
 
-- [x] Sidebar / navigation menu
-- [x] Header
-- [x] Six category cards with realistic static data
-- [x] CSS Grid for the overall layout
-- [x] Flexbox for the header, sidebar items and card content
-- [x] No absolute positioning for layout
-- [x] Theme variables on `:root` (brand, accent, surface, primary text, secondary text)
-- [x] Single-column layout below 768px
-- [x] Hover and focus animations of 250ms or less using `transform` and `box-shadow`
-- [x] Stretch goal: dark theme via `prefers-color-scheme`
+- **CSS Grid** for the page layout, the summary tiles, the card grid and the tracker area. **Flexbox** for the header, sidebar items, card contents, forms and expense rows. No absolute positioning.
+- **Custom properties** on `:root` for the brand, accent, surface, primary text and secondary text colors, plus `--ok`, `--warn` and `--danger` for statuses.
+- **Responsive:** below 768px the layout becomes a single column (test with the DevTools Device Toolbar, Ctrl+Shift+M).
+- **Card micro-interactions:** a 200ms `transform` and `box-shadow` animation on hover and keyboard focus.
+- **Dark theme:** `prefers-color-scheme: dark` overrides only the `:root` variables.
+
+---
+
+## Try it out
+
+1. Add an expense, for example "Lunch", 25, Food. The Food card, the summary and the list all update.
+2. Raise Entertainment spending above 150 and watch its card turn red.
+3. Lower the monthly budget (for example to 2000) to trigger the "over budget" message.
+4. Click a card to filter the list, and delete an expense with the Delete button.
+
+## Notes and limitations
+
+- Data lives in JavaScript variables, so it resets when the page is refreshed. Saving it (for example with `localStorage`) is a good next step.
+- Savings deposits count as money spent in the totals, because they leave the budget each month.
 
 ## Possible next steps
 
-- Add JavaScript so the cards update from real expense data
-- Build the Transactions and Budgets pages linked from the sidebar
-- Add charts for monthly spending trends
+- Save expenses with `localStorage`
+- Add an edit option for existing expenses
+- Add charts for monthly trends
