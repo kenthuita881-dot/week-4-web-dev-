@@ -15,6 +15,7 @@ The SpendWise Dashboard Shell is the visual foundation of my capstone project, a
 | --- | --- |
 | `index.html` | The page structure: sidebar, header and six category cards |
 | `style.css` | All styling: theme variables, layout, cards, animations, responsive rules and dark theme |
+| `script.js` | JavaScript foundation: stores budget data, collects input and calculates the balance |
 | `README.md` | This document |
 
 ---
@@ -95,6 +96,33 @@ The dark theme is implemented by overriding **only the `:root` variables** insid
 To test it, open DevTools, go to Rendering, and use "Emulate CSS media feature prefers-color-scheme".
 
 ---
+
+## JavaScript foundation (`script.js`)
+
+`script.js` is linked in `index.html` with `<script src="script.js" defer></script>`, so it runs after the page has loaded. It logs "SpendWise script loaded successfully." to the console as a quick check that the link works.
+
+### Data (variables)
+- `APP_NAME` and `CURRENCY` are constants used in the report.
+- `monthlyBudget` holds the user's total budget for the month.
+- `expenses` is an object with one entry per dashboard category (Food, Transport, Rent, Entertainment, Savings, Utilities).
+
+### User input
+`collectUserInput()` uses `prompt()` to ask for the monthly budget, then the amount spent in each category. `getNumberInput()` turns the answer into a number and keeps asking until the input is valid (not empty, not text, not negative). Pressing Cancel counts as 0.
+
+### Functions
+| Function | What it does |
+| --- | --- |
+| `getNumberInput(message)` | Prompts and validates a number |
+| `formatCurrency(amount)` | Formats a number as money, e.g. `$1,200.00` |
+| `calculateTotalExpenses(expenseData)` | Adds up all category expenses |
+| `calculateRemainingBalance(budget, totalExpenses)` | Budget minus total expenses |
+| `calculatePercentUsed(budget, totalExpenses)` | Share of the budget spent, as a percentage |
+| `getBudgetStatus(remaining)` | Returns a message: within budget, on the limit or over budget |
+| `collectUserInput()` | Runs all the prompts and stores the answers |
+| `displayReport()` | Prints the labelled report to the console |
+
+### Output
+Open the browser console (F12, then the Console tab) after answering the prompts to see a report with the monthly budget, expenses by category, total expenses, remaining balance, percentage used and a status message. Refresh the page to run it again.
 
 ## Requirements checklist
 
